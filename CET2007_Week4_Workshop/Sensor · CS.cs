@@ -24,7 +24,8 @@ namespace CET2007_Week4_Workshop
 
 			if (value < Min || value > Max)
 				throw new ReadingOutOfRangeException(
-					"Reading " + value + " is outside range [" + Min + " .. " + Max + "] for " + Name + ".");
+					"Reading " + value + " is outside range [" + Min + " .. " + Max + "] for " + Name + ".",
+					value, Min, Max);
 		}
 
 		public override string ToString()

@@ -6,8 +6,10 @@ namespace CET2007_Week4_Workshop
 	{
 		static void Main(string[] args)
 		{
-			Exercise1();
-			Exercise2();
+			// Exercise1();
+			// Exercise2();
+			// Exercise3();
+			Exercise4();
 
 			Console.ReadKey();
 		}
@@ -90,6 +92,87 @@ namespace CET2007_Week4_Workshop
 			}
 
 			Console.WriteLine("Done.");
+		}
+
+		static void Exercise3()
+		{
+			Console.WriteLine("=== Exercise 3: Exception Hierarchy Demo ===\n");
+
+			Sensor[] sensors =
+			{
+				new Sensor("Temperature", -20, 50, true),
+				new Sensor("Humidity", 0, 100, true),
+				new Sensor("Motion", 0, 1, true)
+			};
+
+			Console.WriteLine("Configured Sensors:");
+			for (int i = 0; i < sensors.Length; i++)
+				Console.WriteLine(sensors[i].ToString());
+
+			Console.WriteLine("\n--- Demonstrating Exception Handling Order ---\n");
+
+			try
+			{
+				// (a) ReadingOutOfRangeException
+				Console.WriteLine("Testing extreme reading for Temperature...");
+				sensors[0].ValidateReading(999);
+
+				// (b) SensorOfflineException
+				Console.WriteLine("Turning off Humidity sensor...");
+				sensors[1].IsOnline = false;
+				sensors[1].ValidateReading(50);
+
+				// (c) IndexOutOfRangeException (array has only 3 items: index 0..2)
+				Console.WriteLine("Accessing invalid sensor index...");
+				sensors[5].ValidateReading(10);
+			}
+			catch (ReadingOutOfRangeException ex)
+			{
+				Console.WriteLine("[Caught] " + ex.GetType().Name + ": " + ex.Message);
+			}
+			catch (SensorOfflineException ex)
+			{
+				Console.WriteLine("[Caught] " + ex.GetType().Name + ": " + ex.Message);
+			}
+			catch (IndexOutOfRangeException ex)
+			{
+				Console.WriteLine("[Caught] " + ex.GetType().Name + ": " + ex.Message);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("[Caught] " + ex.GetType().Name + ": " + ex.Message);
+			}
+
+			Console.WriteLine("\nExecution continues normally after handling exceptions.");
+		}
+
+		static void Exercise4()
+		{
+			Console.WriteLine("=== Exercise 4: Context-Rich Custom Exceptions ===\n");
+
+			Sensor[] sensors =
+			{
+				new Sensor("Humidity", 0, 100, true),
+				new Sensor("Motion", 0, 1, false)
+			};
+
+			Console.WriteLine("Configured Sensors:");
+			for (int i = 0; i < sensors.Length; i++)
+				Console.WriteLine(sensors[i].ToString());
+
+			Console.WriteLine("\n--- Simulating Exceptions with Context ---\n");
+
+			Console.WriteLine("Checking Humidity with value 120 ...");
+			try
+			{
+				sensors[0].ValidateReading(120);
+			}
+			catch (ReadingOutOfRangeException ex)
+			{
+				Console.WriteLine("[Caught] " + ex.GetType().Name + ": " + ex.Message);
+				Console.WriteLine("Details -> Attempted: " + ex.AttemptedValue +
+								  ", Min: " + ex.Min + ", Max: " + ex.Max);
+			}
 		}
 	}
 }
