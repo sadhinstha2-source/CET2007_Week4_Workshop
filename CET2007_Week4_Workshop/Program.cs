@@ -9,7 +9,8 @@ namespace CET2007_Week4_Workshop
 			// Exercise1();
 			// Exercise2();
 			// Exercise3();
-			Exercise4();
+			// Exercise4();
+			Exercise5();
 
 			Console.ReadKey();
 		}
@@ -172,6 +173,61 @@ namespace CET2007_Week4_Workshop
 				Console.WriteLine("[Caught] " + ex.GetType().Name + ": " + ex.Message);
 				Console.WriteLine("Details -> Attempted: " + ex.AttemptedValue +
 								  ", Min: " + ex.Min + ", Max: " + ex.Max);
+			}
+		}
+
+		static void Exercise5()
+		{
+			Console.WriteLine("=== Exercise 5: Monitoring Cycle ===\n");
+
+			Sensor[] sensors =
+			{
+				new Sensor("Temperature", -20, 50, true),
+				new Sensor("Humidity", 0, 100, true),
+				new Sensor("Motion", 0, 1, false),
+				new Sensor("Pressure", 950, 1050, true),
+				new Sensor("Light", 0, 1000, true)
+			};
+			double[] readings = { 25, 120, 1, 900, 500 };
+
+			for (int i = 0; i < sensors.Length; i++)
+			{
+				Console.WriteLine(sensors[i].ToString());
+				try
+				{
+					sensors[i].ValidateReading(readings[i]);
+					Console.WriteLine("OK: " + sensors[i].Name + " reading accepted: " + readings[i]);
+				}
+				// Domain exceptions
+				catch (SensorOfflineException ex)
+				{
+					Console.WriteLine("[SensorOfflineException] " + ex.Message);
+				}
+				catch (ReadingOutOfRangeException ex)
+				{
+					Console.WriteLine("[ReadingOutOfRangeException] " + ex.Message);
+					Console.WriteLine("Attempted: " + ex.AttemptedValue + ", Min: " + ex.Min + ", Max: " + ex.Max);
+				}
+				// System exceptions
+				catch (ArgumentOutOfRangeException ex)
+				{
+					Console.WriteLine("[ArgumentOutOfRangeException] " + ex.Message);
+				}
+				catch (IndexOutOfRangeException ex)
+				{
+					Console.WriteLine("[IndexOutOfRangeException] " + ex.Message);
+				}
+				// General fallback
+				catch (Exception ex)
+				{
+					Console.WriteLine("[General Exception] " + ex.Message);
+				}
+				finally
+				{
+					Console.WriteLine();
+					Console.WriteLine(sensors[i].Name + " Sensor Monitoring complete.");
+					Console.WriteLine();
+				}
 			}
 		}
 	}
