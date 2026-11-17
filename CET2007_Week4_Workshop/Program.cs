@@ -6,6 +6,14 @@ namespace CET2007_Week4_Workshop
 	{
 		static void Main(string[] args)
 		{
+			Exercise1();
+			Exercise2();
+
+			Console.ReadKey();
+		}
+
+		static void Exercise1()
+		{
 			Console.WriteLine("=== Exercise 1: Handling Invalid Sensor Readings ===\n");
 
 			string[] sensorNames = { "Temperature", "Humidity", "Motion" };
@@ -41,8 +49,47 @@ namespace CET2007_Week4_Workshop
 			for (int i = 0; i < readings.Length; i++)
 				Console.WriteLine(readings[i].ToString());
 
-			Console.WriteLine("\nProgram finished successfully.");
-			Console.ReadKey();
+			Console.WriteLine("\nProgram finished successfully.\n");
+		}
+
+		static void Exercise2()
+		{
+			Console.WriteLine("=== Exercise 2: Custom Exceptions for Faulty Sensors ===\n");
+
+			Sensor[] sensors =
+			{
+				new Sensor("Temperature", -20, 50, true),
+				new Sensor("Humidity", 0, 100, true),
+				new Sensor("Motion", 0, 1, false)
+			};
+			double[] sampleReading = { 22.5, 120.0, 1.0 };
+
+			Console.WriteLine("Configured Sensors:");
+			for (int i = 0; i < sensors.Length; i++)
+				Console.WriteLine(sensors[i].ToString());
+
+			Console.WriteLine("\n--- Validating Sample Readings ---\n");
+
+			for (int i = 0; i < sensors.Length; i++)
+			{
+				Console.WriteLine("Checking " + sensors[i].Name + " with value " + sampleReading[i] + " ...");
+				try
+				{
+					sensors[i].ValidateReading(sampleReading[i]);
+					Console.WriteLine(sensors[i].Name + " reading accepted.");
+				}
+				catch (SensorOfflineException)
+				{
+					Console.WriteLine(sensors[i].Name + " sensor offline - check connection.");
+				}
+				catch (ReadingOutOfRangeException)
+				{
+					Console.WriteLine(sensors[i].Name + " reading out of range (value " + sampleReading[i] + ").");
+				}
+				Console.WriteLine();
+			}
+
+			Console.WriteLine("Done.");
 		}
 	}
 }
